@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSnapshot } from "valtio";
 
@@ -17,8 +17,11 @@ import {
   FilePicker,
 } from "../components";
 
+
 const Customizer = () => {
   const snap = useSnapshot(state);
+
+  const editorRef = useRef(null);
 
   const [file, setFile] = useState("");
 
@@ -97,6 +100,9 @@ const Customizer = () => {
       case "stylishShirt":
         state.isFullTexture = !activeFilterTab[tabName];
         break;
+      case "download":
+        downloadCanvasToImage();
+        break;
       default:
         state.isFullTexture = false;
         state.isLogoTexture = true;
@@ -117,6 +123,24 @@ const Customizer = () => {
     });
   };
 
+  useEffect(() => {
+    // Function to handle clicks outside the editor div
+    const handleOutsideClick = (event) => {
+      if (editorRef.current && !editorRef.current.contains(event.target)) {
+        // Click is outside the editor div, close the editor by setting intro to true
+        setActiveEditorTab("");
+      }
+    };
+
+    // Add the event listener when the component mounts
+    document.addEventListener("click", handleOutsideClick);
+    // Remove the event listener when the component unmounts to avoid memory leaks
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, []);
+
+
   return (
     <AnimatePresence>
       {!snap.intro && (
@@ -127,7 +151,7 @@ const Customizer = () => {
             {...slideAnimation("left")}
           >
             <div className="flex items-center min-h-screen">
-              <div className="editortabs-container tabs">
+              <div ref={editorRef} className="editortabs-container tabs">
                 {EditorTabs.map((tab) => (
                   <Tab
                     key={tab.name}
