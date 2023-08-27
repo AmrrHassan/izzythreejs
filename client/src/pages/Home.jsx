@@ -39,7 +39,7 @@ export const Home = () => {
               className="flex flex-col gap-5"
             >
               <p className="max-w-md font-normal text-gray-600 text-base">
-                Create your unique & exclusive T-Shirt with IZZY new 3D
+                Create your unique & exclusive T-Shirt with SENNO new 3D
                 customiation tool.{" "}
                 <strong>Unleash your imagination</strong> and define your own
                 style.
